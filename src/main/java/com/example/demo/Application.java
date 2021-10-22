@@ -19,17 +19,17 @@ public class Application {
     CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
         return args -> {
             Student s1 = new Student(
-                    "Student1",
+                    "Tim",
                     "Jones",
-                    "maria.jones@amigoscode.edu",
-                    21
+                    "Tim1.jones@amigoscode.edu",
+                    33
             );
 
             Student s2 = new Student(
-                    "Student2",
+                    "Thang",
                     "Jones",
-                    "maria2.jones@amigoscode.edu",
-                    25
+                    "Tim2.jones@amigoscode.edu",
+                    33
             );
 
             Student s3 = new Student(
@@ -54,9 +54,21 @@ public class Application {
             students.forEach(System.out::println);
 
             System.out.println("Delete");
-            studentRepository.deleteById(1L);
+            studentRepository.deleteById(2L);
 
             System.out.println("After delete: "+studentRepository.count());
+
+            studentRepository
+                    .findStudentByEmail("ahmed.ali@amigoscode.edu")
+                    .ifPresentOrElse(System.out::println, () -> {
+                        System.out.println("Email not found");
+                    });
+
+            studentRepository
+                    .findStudentsByFirstNameEqualsAndAgeEquals("Tim", 33)
+                    .forEach(System.out::println);
+
+
 
         };
     }
