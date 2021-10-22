@@ -58,8 +58,13 @@ public class Student {
     )
     private Integer age;
 
-    public Student(Long id, String firstName, String lastName, String email, Integer age) {
-        this.id = id;
+    public Student(
+//            Long id, // ID is generated for us and backed by a sequence
+                   String firstName,
+                   String lastName,
+                   String email,
+                   Integer age) {
+//        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
