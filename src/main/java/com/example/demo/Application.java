@@ -20,8 +20,8 @@ public class Application {
         return args -> {
             Student s1 = new Student(
                     "Tim",
-                    "Jones",
-                    "Tim1.jones@amigoscode.edu",
+                    "Shen",
+                    "Tim1.Shen@amigoscode.edu",
                     33
             );
 
@@ -68,6 +68,21 @@ public class Application {
                     .findStudentsByFirstNameEqualsAndAgeEquals("Tim", 33)
                     .forEach(System.out::println);
 
+
+            // oneline foreach
+            studentRepository.findStudentsByLastName("Shen")
+                    .forEach(System.out::println);
+
+            // traditional foreach
+            List<Student> studentsByLastName = studentRepository.findStudentsByLastName("Shen");
+            for(Student s : studentsByLastName){
+                System.out.println("traditional foreach: "+s);
+            }
+
+            // for-loop
+            for(int i=0; i<studentsByLastName.size(); i++){
+                System.out.println("for-loop: " + studentsByLastName.get(i));
+            }
 
 
         };
