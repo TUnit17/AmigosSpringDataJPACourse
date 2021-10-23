@@ -85,9 +85,9 @@ public class Application {
                 System.out.println("for-loop: " + studentsByLastName.get(i));
             }
 
-//            studentRepository
-//                    .findStudentsByFirstNameNative("ahmed")
-//                    .forEach(System.out::println);
+            studentRepository
+                    .findStudentsByFirstNameNative("Thang")
+                    .forEach(System.out::println);
         };
     }
 
