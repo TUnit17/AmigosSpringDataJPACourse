@@ -53,8 +53,8 @@ public class Application {
             List<Student> students = studentRepository.findAll();
             students.forEach(System.out::println);
 
-            System.out.println("Delete");
-            studentRepository.deleteById(2L);
+//            System.out.println("Delete");
+//            studentRepository.deleteById(2L);
 
             System.out.println("After delete: "+studentRepository.count());
 
@@ -67,6 +67,7 @@ public class Application {
             studentRepository
                     .findStudentsByFirstNameEqualsAndAgeEquals("Tim", 33)
                     .forEach(System.out::println);
+
 
 
             // oneline foreach
@@ -84,7 +85,9 @@ public class Application {
                 System.out.println("for-loop: " + studentsByLastName.get(i));
             }
 
-
+//            studentRepository
+//                    .findStudentsByFirstNameNative("ahmed")
+//                    .forEach(System.out::println);
         };
     }
 

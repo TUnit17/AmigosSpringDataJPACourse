@@ -17,6 +17,9 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
 
     @Query("SELECT s from Student s WHERE s.lastName = ?1")
     List<Student> findStudentsByLastName(String lastName);
+
+//    @Query(value = "SELECT * from Student s WHERE s.firstName = ?1", nativeQuery = true)
+//    List<Student> findStudentsByFirstNameNative(String lastName);
 }
 
 // https://docs.spring.io/spring-data/jpa/docs/2.5.5/reference/html/#jpa.query-methods
