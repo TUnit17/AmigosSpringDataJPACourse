@@ -1,12 +1,15 @@
 package com.example.demo;
 
+import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 public class Application {
@@ -18,77 +21,44 @@ public class Application {
     @Bean
     CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
         return args -> {
-            Student s1 = new Student(
-                    "Tim",
-                    "Shen",
-                    "Tim1.Shen@amigoscode.edu",
-                    33
-            );
-
-            Student s2 = new Student(
-                    "Thang",
-                    "Jones",
-                    "Tim2.jones@amigoscode.edu",
-                    33
-            );
-
-            Student s3 = new Student(
-                    "Student3",
-                    "Ali",
-                    "ahmed.ali@amigoscode.edu",
-                    18
-            );
-
-            studentRepository.saveAll(List.of(s1, s2, s3));
-
-            System.out.println("Number of students: "+studentRepository.count());
-
-            Optional<Student> student2 = studentRepository.findById(2L);
-            System.out.println("Student 2:" + student2);
-
-            printStudentById(studentRepository, 2L);
-            printStudentById(studentRepository, 3L);
-
-            System.out.println("Select all students");
-            List<Student> students = studentRepository.findAll();
-            students.forEach(System.out::println);
-
-//            System.out.println("Delete");
-//            studentRepository.deleteById(2L);
-
-            System.out.println("After delete: "+studentRepository.count());
-
-            studentRepository
-                    .findStudentByEmail("ahmed.ali@amigoscode.edu")
-                    .ifPresentOrElse(System.out::println, () -> {
-                        System.out.println("Email not found");
-                    });
-
-            studentRepository
-                    .findStudentsByFirstNameEqualsAndAgeEquals("Tim", 33)
-                    .forEach(System.out::println);
-
-
-
-            // oneline foreach
-            studentRepository.findStudentsByLastName("Shen")
-                    .forEach(System.out::println);
-
-            // traditional foreach
-            List<Student> studentsByLastName = studentRepository.findStudentsByLastName("Shen");
-            for(Student s : studentsByLastName){
-                System.out.println("traditional foreach: "+s);
-            }
-
-            // for-loop
-            for(int i=0; i<studentsByLastName.size(); i++){
-                System.out.println("for-loop: " + studentsByLastName.get(i));
-            }
-
-            studentRepository
-                    .findStudentsByFirstNameNative("Thang")
-                    .forEach(System.out::println);
+            generateRandomStudents(studentRepository);
+            sortStudents(studentRepository);
+            paginateStudents(studentRepository);
         };
+
+    }
+
+    private void paginateStudents(StudentRepository studentRepository) {
+        PageRequest pageRequest = PageRequest.of(0,5);
+        Page<Student> page = studentRepository.findAll(pageRequest);
+        System.out.println(page);
+    }
+
+    private void sortStudents(StudentRepository studentRepository) {
+        Sort sort = Sort
+                .by("firstName").ascending()
+                .and(Sort.by("age").descending());
+        studentRepository
+                .findAll(sort)
+                .forEach(student -> System.out.println(student.getFirstName() + " " + student.getAge()));
+    }
+
+    private void generateRandomStudents(StudentRepository studentRepository) {
+        Faker faker = new Faker();
+        for (int i = 0; i < 20 ; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String email = String.format("%s.%s@email.com", firstName,lastName);
+            int age = faker.number().numberBetween(17, 66);
+            Student student = new Student(
+                    firstName,
+                    lastName,
+                    email,
+                    age
+            );
+
+            studentRepository.save(student);
+        }
     }
 
     private void printStudentById(StudentRepository studentRepository, long id) {
