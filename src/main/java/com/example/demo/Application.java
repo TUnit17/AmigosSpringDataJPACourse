@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 
@@ -18,12 +17,20 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
+    @Bean // this will inject the following parameters inside
+    CommandLineRunner commandLineRunner(StudentRepository studentRepository,
+                                        StudentIdCardRepository studentIdCardRepository) {
         return args -> {
-            generateRandomStudents(studentRepository);
-            sortStudents(studentRepository);
-            paginateStudents(studentRepository);
+//            generateRandomStudents(studentRepository);
+//            sortStudents(studentRepository);
+//            paginateStudents(studentRepository);
+
+            generateRandomStudentIdCard(studentIdCardRepository);
+
+            studentRepository.findById(1L)
+                    .ifPresentOrElse(System.out::println, () -> {
+                        System.out.println("not found in studentRepository");
+                    });
         };
 
     }
@@ -41,6 +48,27 @@ public class Application {
         studentRepository
                 .findAll(sort)
                 .forEach(student -> System.out.println(student.getFirstName() + " " + student.getAge()));
+    }
+
+    private void generateRandomStudentIdCard(StudentIdCardRepository studentIdCardRepository){
+        Faker faker = new Faker();
+        String firstName = faker.name().firstName();
+        String lastName = faker.name().lastName();
+        String email = String.format("%s.%s@email.com", firstName,lastName);
+        int age = faker.number().numberBetween(17, 66);
+        Student student = new Student(
+                firstName,
+                lastName,
+                email,
+                age
+        );
+        StudentIdCard studentIdCard = new StudentIdCard("123456789", student);
+        studentIdCardRepository.save(studentIdCard);
+
+        studentIdCardRepository.findById(1L)
+                .ifPresentOrElse(System.out::println, () -> {
+                    System.out.println("Not found 1L");
+                });
     }
 
     private void generateRandomStudents(StudentRepository studentRepository) {

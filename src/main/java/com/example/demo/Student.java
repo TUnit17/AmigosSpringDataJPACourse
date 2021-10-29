@@ -57,6 +57,10 @@ public class Student {
     )
     private Integer age;
 
+    // this means that when I go to the StudentIdCard class map to the variable named student
+    @OneToOne(mappedBy = "student")
+    private StudentIdCard studentIdCard;
+
     public Student(String firstName,
                    String lastName,
                    String email,
