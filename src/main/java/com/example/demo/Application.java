@@ -21,18 +21,19 @@ public class Application {
     CommandLineRunner commandLineRunner(StudentRepository studentRepository,
                                         StudentIdCardRepository studentIdCardRepository) {
         return args -> {
-//            generateRandomStudents(studentRepository);
-//            sortStudents(studentRepository);
-//            paginateStudents(studentRepository);
-
             generateRandomStudentIdCard(studentIdCardRepository);
-
-            studentRepository.findById(1L)
-                    .ifPresentOrElse(System.out::println, () -> {
-                        System.out.println("not found in studentRepository");
-                    });
+            studentRepoMethod(studentRepository);
         };
 
+    }
+
+    private void studentRepoMethod(StudentRepository studentRepository) {
+        studentRepository.findById(1L)
+                .ifPresentOrElse(System.out::println, () -> {
+                    System.out.println("not found in studentRepository");
+                });
+
+        studentRepository.deleteById(1L);
     }
 
     private void paginateStudents(StudentRepository studentRepository) {

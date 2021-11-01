@@ -2,6 +2,9 @@ package com.example.demo;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity(name = "Student")
@@ -57,8 +60,16 @@ public class Student {
     )
     private Integer age;
 
+    @OneToMany(
+            mappedBy = "student",
+            orphanRemoval = true, // when a student is deleted, delete the book(s)
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}
+    )
+    List<Book> books = new ArrayList<>();
+
     // this means that when I go to the StudentIdCard class map to the variable named student
-    @OneToOne(mappedBy = "student")
+    @OneToOne(mappedBy = "student",
+            orphanRemoval = true)
     private StudentIdCard studentIdCard;
 
     public Student(String firstName,
@@ -124,5 +135,25 @@ public class Student {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    public void addBook(Book book){
+        // if the list does not contain the book, add it
+        if(!this.books.contains(book)){
+            this.books.add(book);
+
+            // make sure the book is associated with the student
+            book.setStudent(this);
+        }
+    }
+
+    public void removeBook(Book book){
+        // if the list does contain the book, remove it
+        if(this.books.contains(book)){
+            this.books.remove(book);
+
+            // remove the student from the book
+            book.setStudent(null);
+        }
     }
 }
