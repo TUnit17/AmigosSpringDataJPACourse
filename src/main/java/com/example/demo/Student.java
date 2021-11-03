@@ -60,17 +60,21 @@ public class Student {
     )
     private Integer age;
 
+    // this means that when I go to the StudentIdCard class map to the variable named student
+    // if cascade does not persist what happens?
+    @OneToOne(mappedBy = "student",
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE} // why is this needed for student and book???
+    )
+    private StudentIdCard studentIdCard;
+
     @OneToMany(
             mappedBy = "student",
             orphanRemoval = true, // when a student is deleted, delete the book(s)
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.EAGER
     )
     List<Book> books = new ArrayList<>();
-
-    // this means that when I go to the StudentIdCard class map to the variable named student
-    @OneToOne(mappedBy = "student",
-            orphanRemoval = true)
-    private StudentIdCard studentIdCard;
 
     public Student(String firstName,
                    String lastName,
@@ -126,6 +130,10 @@ public class Student {
         this.age = age;
     }
 
+    public void setStudentIdCard(StudentIdCard studentIdCard) {
+        this.studentIdCard = studentIdCard;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -155,5 +163,9 @@ public class Student {
             // remove the student from the book
             book.setStudent(null);
         }
+    }
+
+    public List<Book> getBooks(){
+        return this.books;
     }
 }
